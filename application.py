@@ -24,11 +24,6 @@ def register():
         username = reg_form.username.data
         password = reg_form.password.data
 
-        # Перевірте, чи існує ім’я користувача
-        user_object = User.query.filter_by(username=username).first()
-        if user_object:
-            return "Хтось інший взяв це ім’я користувача!"
-
         # Додати користувача в БД
         user = User(username=username, password=password)
         db.session.add(user)

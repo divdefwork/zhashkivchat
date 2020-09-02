@@ -3,7 +3,9 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired,  Length, EqualTo
+from wtforms.validators import InputRequired,  Length, EqualTo, ValidationError
+
+from models import User
 
 
 class RegistrationForm(FlaskForm):
@@ -19,3 +21,10 @@ class RegistrationForm(FlaskForm):
                                  validators=[InputRequired(message="Потрібен пароль"),
                                              EqualTo('password', message="Паролі повинні співпадати")])
     submit_button = SubmitField('Створити')
+
+    def validate_username(self, username):
+        """ Перевірка, чи існує ім'я користувача """
+        user_object = User.query.filter_by(username=username.data).first()
+        if user_object:
+            raise ValidationError(
+                "Ім'я користувача вже існує. Виберіть інше ім’я користувача.")
