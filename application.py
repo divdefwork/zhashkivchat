@@ -10,14 +10,14 @@ app = Flask(__name__)
 app.secret_key = 'replace later'
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/register', methods=['GET', 'POST'])
+def register():
 
     reg_form = RegistrationForm()
     if reg_form.validate_on_submit():
         return "Великий успіх!"
 
-    return render_template('index.html', form=reg_form)
+    return render_template('register.html', form=reg_form)
 
 
 if __name__ == "__main__":
