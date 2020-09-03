@@ -37,8 +37,11 @@ def register():
         username = reg_form.username.data
         password = reg_form.password.data
 
+        # Хеш пароля
+        hashed_pswd = pbkdf2_sha256.hash(password)
+
         # Додати користувача в БД
-        user = User(username=username, password=password)
+        user = User(username=username, password=hashed_pswd)
         db.session.add(user)
         db.session.commit()
 
