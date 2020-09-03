@@ -1,0 +1,20 @@
+{% from 'form_helper.html' import displayField %}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="{{ url_for('index') }}" , method="POST">
+	<h2>Вхід</h2>
+
+	{{ displayField(form.username, "Ім'я користувача", autocomplete="off", autofocus=true) }}
+	{{ displayField(form.password, 'Пароль') }}
+
+	<div>
+		{{ form.submit_button }}
+	</div>
+
+	<p class="forget">Не зареєстровані? <a href="{{ url_for('register') }}">Клацніть тут</a></p>
+	{{ form.csrf_token }}
+</form>
+
+{% endblock %}

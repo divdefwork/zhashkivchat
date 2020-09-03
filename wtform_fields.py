@@ -8,6 +8,32 @@ from wtforms.validators import InputRequired,  Length, EqualTo, ValidationError
 from models import User
 
 
+def invalid_credentials(form, field):
+    """ Перевірка імені користувача та пароля """
+
+    username_entered = form.username.data
+    password_entered = field.data
+
+    # Реєстраційні дані недійсні
+    user_object = User.query.filter_by(username=username_entered).first()
+    if user_object is None:
+        raise ValidationError("Ім'я або пароль невірні.")
+
+    elif password_entered != user_object.password:
+        raise ValidationError("Ім'я або пароль невірні.")
+
+
+class LoginForm(FlaskForm):
+    """ Форма для входу """
+
+    username = StringField('username_label',
+                           validators=[InputRequired(message="Потрібне ім’я користувача")])
+    password = PasswordField('password_label',
+                             validators=[InputRequired(message="Потрібен пароль"),
+                                         invalid_credentials])
+    submit_button = SubmitField('Ввійти')
+
+
 class RegistrationForm(FlaskForm):
     """Реєстраційна форма"""
 
