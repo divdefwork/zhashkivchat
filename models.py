@@ -2,12 +2,12 @@
 # !/usr/bin/env python3
 
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """ Модель користувача """
 
     __tablename__ = "users"
