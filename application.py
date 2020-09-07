@@ -1,8 +1,10 @@
 # -*- coding=utf-8 -*-
 # !/usr/bin/env python3
 
+import time
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, logout_user
+from flask_socketio import SocketIO, join_room, leave_room, send
 
 from wtform_fields import *
 from models import *
@@ -14,6 +16,10 @@ app.secret_key = 'replace later'
 # Налаштування бази даних
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ywqxdfutjbrllu:4bf9490496b00c99e12a00ac7aad76018a943dd7997fb6667da8dc33b63dd075@ec2-54-228-209-117.eu-west-1.compute.amazonaws.com:5432/dc4d1f73beffi3'
 db = SQLAlchemy(app)
+
+# Ініціалізуйте Flask-SocketIO
+socketio = SocketIO(app)
+ROOMS = ["вітальня", "продам/куплю", "реклама", "питання/відповідь"]
 
 # Налаштування flask login
 login = LoginManager(app)
@@ -73,7 +79,8 @@ def chat():
         flash('Будь ласка, увійдіть', 'danger')
         return redirect(url_for('index'))
 
-    return "Поговори зі мною"
+    return render_template('chat.html',
+                           username=current_user.username, rooms=ROOMS)
 
 
 @app.route("/logout", methods=['GET'])
@@ -84,5 +91,15 @@ def logout():
     return redirect(url_for('index'))
 
 
+@socketio.on('message')
+def message(data):
+
+    print(f"\n\n{ data }\n\n")
+
+    send({'msg': data['msg'], 'username': data['username'],
+          'time_stamp': strftime('%H:%M %d %B', localtime())},
+         room=data['room'])
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debud=True)
