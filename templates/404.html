@@ -1,0 +1,14 @@
+{% from 'form_helper.html' import displayField %}
+{% extends "base.html" %}
+
+{% block title %}Сторінку не знайдено{% endblock %}
+
+{% block content %}
+<h2>На жаль, сторінка, яку ви шукаєте, не існує!</h2>
+<br />
+<h4>Перейти до <a href={{url_for('index')}}>сторінки входу</a> щоб розпочати чат.</h3>
+	<br />
+	<hr>
+
+	<p>Не зареєстровані? <a href={{url_for('register')}}>Реєстрація тут</a>.</p>
+	{% endblock %}

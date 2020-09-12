@@ -9,9 +9,9 @@
 	{{ displayField(form.username, "Ім'я користувача", autocomplete="off", autofocus=true) }}
 	{{ displayField(form.password, 'Пароль') }}
 	{{ displayField(form.confirm_pswd, 'Введіть пароль ще раз') }}
-
-	<div>
-		{{ form.submit_button }}
+	
+	<div class="form-group">
+		<input type="submit" value="Створити" class="btn btn-warning">
 	</div>
 
 	{{ form.csrf_token }}

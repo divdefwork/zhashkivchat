@@ -1,11 +1,12 @@
-{% macro displayField(fieldName, placeholderValue) %}
+{# Render form fields #}
+{% macro displayField(field, fieldName) %}
 
 <div>
-	{{ fieldName(class_='form-control', placeholder=placeholderValue, **kwargs) }}
+	{{ field(class_='form-control', placeholder=fieldName, **kwargs) }}
 
 	<!-- Повідомлення про помилки -->
 	<ul>
-		{% for error in fieldName.errors %}
+		{% for error in field.errors %}
 		<li>{{ error }}</li>
 		{% endfor %}
 	</ul>

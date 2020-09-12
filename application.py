@@ -2,7 +2,7 @@
 # !/usr/bin/env python3
 
 import time
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, logout_user
 from flask_socketio import SocketIO, join_room, leave_room, send
 
@@ -18,10 +18,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://ywqxdfutjbrllu:4bf9490496b00
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Ініціалізуйте Flask-SocketIO
-# socketio = SocketIO(app)
-# ROOMS = ["вітальня", "продам/куплю", "реклама", "питання/відповідь"]
-
 # Налаштування flask login
 login = LoginManager(app)
 login.init_app(app)
@@ -29,7 +25,6 @@ login.init_app(app)
 
 @login.user_loader
 def load_user(id):
-
     return User.query.get(int(id))
 
 
@@ -68,12 +63,11 @@ def register():
         hashed_pswd = pbkdf2_sha256.hash(password)
 
         # Додати користувача в БД
-        user = User(username=username, password=hashed_pswd)
+        user = User(username=username, hashed_pswd=hashed_pswd)
         db.session.add(user)
         db.session.commit()
 
         flash('Зареєстровано успішно. Будь ласка, увійдіть.', 'success')
-
         return redirect(url_for('index'))
 
     return render_template('register.html', form=reg_form, title="Реєстрація")
@@ -98,6 +92,12 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # Зверніть увагу, що ми встановлюємо статус 404 явно
+    return render_template('404.html'), 404
+
+
 @socketio.on('incoming-msg')
 def on_message(data):
     """Трансляція повідомлень"""
@@ -119,7 +119,7 @@ def on_join(data):
     join_room(room)
 
     # Трансляція, до якої приєднався новий користувач
-    send({"msg": username + " приєднався до кімнати" + room + "."}, room=room)
+    send({"msg": username + " приєднався до кімнати " + room + "."}, room=room)
 
 
 @socketio.on('leave')
@@ -133,5 +133,4 @@ def on_leave(data):
 
 
 if __name__ == "__main__":
-    # socketio.run(app, debud=True)
     app.run(debug=True)
