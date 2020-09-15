@@ -334,3 +334,4 @@ fabric.properties
 .history
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,python,visualstudiocode,pycharm,flask,less
+static/css/styles.css.map
